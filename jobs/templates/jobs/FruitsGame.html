@@ -39,10 +39,10 @@
     }
     
     #container{
-        height: 500px;
-        width: 600px;
-        background-color: #9DD2EA;
-        margin: 100px auto;
+        height: 700px;
+        width: 700px;
+        background-color: dimgray;
+        margin: 10px auto;
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0px 4px 0px #009de4;
@@ -54,7 +54,7 @@
         color: #888E5F;
         padding: 11px;
         position: absolute;
-        left: 450px;
+        left: 600px;
         box-shadow: 0px 4px #9da853;
     }
     
@@ -75,16 +75,18 @@
         padding: 11px;
         display: none;
     }
-    #question{
-        width: 450px;
-        height: 150px;
+    #fruitsContainer{
+        width: 650px;
+        height: 400px;
         margin: 50px auto 10px auto;
-        background-color: #9DA0EA;
+        background-color: white;
         font-size: 100px;
         color: center;
         font-family: cursive, sans-serif;
         color: black;
         text-align: center;
+        position: relative;
+        overflow: hidden;
     }
     #instruction{
         width: 450px;
@@ -140,12 +142,10 @@
         transition: all 0.2s;
     }
     
-    #timeremaining{
-        width: 152px;
+    #trialsLeft{
+        width: 80px;
         padding: 10px;
         position: absolute;
-        top: 395px;
-        left: 400px;
         background-color: yellow;
         border-radius: 3px;
 /*        visibility: hidden; */
@@ -160,10 +160,15 @@
         text-align: center;
         text-transform: uppercase;
         position: absolute;
-        top: 100px;
-        left: 45px;
+        top: 170px;
+        left: 150px;
         z-index: 2;
         display: none;
+    }
+    
+    .fruit{
+        display:none;
+        position: absolute;
     }
 .bd-placeholder-img {
 font-size: 1.125rem;
@@ -245,22 +250,20 @@ text-anchor: middle;
     <div id="score">
     Score: <span id="scorevalue">0</span>
     </div>
+    <div id="trialsLeft">
+        
+    </div>
     <div id="correct">Correct</div>
     <div id="wrong">Try again</div>
-    <div id="question">Question</div>
-    <div id="instruction">Select correct <strong>answer</strong></div>
-    <div id="choices">
-        <div id="box1" class="box"></div>
-        <div id="box2" class="box"></div>
-        <div id="box3" class="box"></div>
-        <div id="box4" class="box"></div>
+    <div id="fruitsContainer">
+        <img id="fruit1" class="fruit"/>    
     </div>
+    <div id="instruction">Slice <strong>Fruits</strong></div>
+   
     <div id="startreset">
         Start Game
     </div>
-    <div id="timeremaining">
-        Time remaining: <span id="timeremainingvalue">60</span> sec
-    </div>
+    
     <div id="gameover">
         <p> Game Over!</p>
         <p> Yout score is</p>
@@ -283,156 +286,145 @@ text-anchor: middle;
 
     <!-- JavaScript Bundle with Popper -->
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 <script> 
-    var playing = false;
-    var score;
-    var action;
-    var timeremaining;
-    var correctAnswer;
-    // if we click on the start /reset
-    document.getElementById("startreset").onclick = function(){
-        // if we rae playing
-        if(playing== true){
-            location.reload(); //reloading page
-        }else{ //if wwe are not playing
-            playing = true; //change mode to playing
-            score = 0; //set score to 0
-            document.getElementById("scorevalue").innerHTML = score;
-            show("timeremaining");
-            timeremaining = 20;
-            document.getElementById("timeremainingvalue").innerHTML = timeremaining;
-            // hide game over box
-            hide("gameover");
-            
-              //change button to reset
-            document.getElementById("startreset").innerHTML = "Reset Game";
-            //start countdon
-            startCountdown();
-            
-            //generate ne Q&A
-            generateQA();
-        }
-             
-    }
+//click on start reset button
+    //are we playing?
+        //yes
+            //reload page
+        //no
+            //show trials left box
+            //change button text to reset game
+            //create a random fruit
+            //defube a rabdin steo        
+            //move fruit down one step every 30sec
+            //is fruit too low?
+                //no -> repeat nb2
+                //yes -> any trails left?
+                    //yes: repeat nb1
+                    //no: show game over, button text to: start game
     
-    //clicking on answwer box
-    for(i=1; i<5; i++){
-        document.getElementById("box"+ i).onclick = function(){
-        //if wwe are playing
-        if(playing == true){
-            if(this.innerHTML == correctAnswer){    // "this" can be used instead document.getelementbyId 
-                //correct answer`
-                score++;  //inrease score
-                document.getElementById("scorevalue").innerHTML = score;
-                //show correct box
-                hide("wrong");
-                show("correct");
-                setTimeout(function(){
-                    hide("correct");
-                }, 1000);
-                //generate new question
-                generateQA();
-            }else{
-                //wrong answer
-                hide("correct");
-                show("wrong");
-                setTimeout(function(){
-                    hide("wrong");
-                }, 1000);
-            }
-        }
-    }
-    
-    }
-    
-    
-    
-    
-    //functions
-    
-    //start counter
-    function startCountdown(){
-        action = setInterval(function(){
-            timeremaining -= 1;
-            
-            document.getElementById("timeremainingvalue").innerHTML = timeremaining;
-        
-            if(timeremaining == 0){ //game over
-                stopCountdown();
-                show("gameover");
-                document.getElementById("gameover").innerHTML = "<p>Game Over</p><p>Your score is " + score +".</p>";
-                hide("timeremaining");
-                hide("correct");
-                hide("wrong");
-                playing = false;
-                document.getElementById("startreset").innerHTML = "Start Game";
-            }
-        }, 1000);
-    }
-    
-    
-    //stop counter
-    function stopCountdown(){
-        clearInterval(action);
-        
-    }
-    
-    
-    //hide an elemenet
-    function hide(Id){
-        document.getElementById(Id).style.display = "none";
-    }
-    
-    //show an elemenet
-    function show(Id){
-        document.getElementById(Id).style.display = "block";
-    }
-    
-    // generate question and multiple answers
-    
-    
-    function generateQA(){
-        var x = 1 + Math.round(9*Math.random());
-        var y = 1 + Math.round(9*Math.random());
-        correctAnswer = x*y;
-        document.getElementById("question").innerHTML = x + "x" + y;
-        var correctPosition = 1 + Math.round(3*Math.random());
-        document.getElementById("box" + correctPosition).innerHTML = correctAnswer; //fill one box with correct answer
-        
-        
-        var answers = [correctAnswer];
-        
-        //fill other boxes with wrong answer
-        for(i=1; i<5; i++){
-            if(i != correctPosition){
-                var wrongAnswer;
-                do{
-                    wrongAnswer = (1 + Math.round(9*Math.random()))*(1 + Math.round(9*Math.random())); //a wrong answer
-                }while(answers.indexOf(wrongAnswer)>-1)
-                
-                document.getElementById("box"+i).innerHTML = wrongAnswer;
-                answers.push(wrongAnswer);
-            }
-        }
-        
-        
-    }
-        
-    //if we click on answer box
-        //if we are playing
-            //correct?
-                //yes
-                    //increase score
-                    //sho correct box
-                    //generate new QandA
-                //no
-                    //showw try again box 
-      
-      
+    //slice a fruit 
+        //plya sound
+        //fruit explode
+var playing = false;
+var score;
+var trialsLeft;
+var step;
+var action; // used for set interval function
+var fruits = [ '{% static 'chad1.jpg' %}', '{% static 'heart1.jpg' %}'];
+$(function(){
+//click on start reset button
+$("#startreset").click(function(){
+    //we are playing
+    if(playing == true){
+        //reload page
+        location.reload();
+    }else{
+        //we are not playing
+        playing = true; //game initiated
+        // set score to 0
+        score = 0;
+        $("#scorevalue").html(score);
 
-      
+        //show trials left
+        $("#trialsLeft").show();
+        trialsLeft = 3;
+        addHearts();
+
+        //hide game over box
+        $("#gameover").hide();
+
+        //change button text to reset game
+        $("#startreset").html("Reset Game");
+
+        //start sending fruits
+        startAction();
+    }
+});
+    
+$("#fruit1").mouseover(function(){
+    score++;
+    $("#scorevalue").html(score); //update score
+    
+    //stop fruit 
+    clearInterval(action);
+    //hide fruit
+    $("#fruit1").hide("explode", 100);
+    
+    //send new fruit
+    setTimeout(startAction, 100);
+    
+    
+});
+
+
+    
+//functions
+{% load static %}
+
+function addHearts(){
+    $("#trialsLeft").empty();
+    for(i = 0; i < trialsLeft; i++){
+        
+        $("#trialsLeft").append('<img src="{% static 'heart.jpg' %}" height="20" width="20"/>');
+    }
+}
+
+    
+//start sending fruits
+function startAction(){
+    $("#fruit1").show();
+    chooseFruit(); //choose a random fruit
+    $("#fruit1").css({'left': Math.round(550*Math.random()), 'top':-50});
+    // generate a random step
+    step = 1 + Math.round(5*Math.random()); //change step
+    // move fruit down by one step every 10ms
+    action = setInterval(function(){
+        $("#fruit1").css('top', $('#fruit1').position().top + step);
+        
+        //check if fruit is too low?
+        if($("#fruit1").position().top > $("#fruitsContainer").height()){
+           //check if we have trials left
+           if(trialsLeft > 1){
+                $("#fruit1").show();
+                chooseFruit(); //choose a random fruit
+                $("#fruit1").css({'left': Math.round(550*Math.random()), 'top':-50});
+                // generate a random step
+                step = 1 + Math.round(5*Math.random());
+            
+                //reduce trials by one
+                trialsLeft --;
+                // populate trials left box
+                addHearts();
+                }else{ //game over
+                    playing = false; //we are not playing anymore
+                    $("#startreset").html("Start Game"); //change button to start game
+                    $("#gameover").show();
+                    $("#gameover").html('<p>Game Over!</p><p> your score is '+ score +'</p>');
+                    $("#trialsLeft").hide();
+                    stopAction();
+                }
+           
+           
+        }
+    }, 10);
+}
+
+//generate random fruit
+{% load static %}   
+function chooseFruit(){
+    $("#fruit1").attr("src" , fruits[Math.round(2*Math.random())]);
+}
+
+// stop dropping fruits
+function stopAction(){
+    clearInterval(action);
+    $("#fruit1").hide();
+}
+});      
 </script>
 
 

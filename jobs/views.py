@@ -8,3 +8,6 @@ def home(request):
 
 def MathGame(request):
     return render(request, 'jobs/MathGame.html')
+
+def FruitsGame(request):
+    return render(request, 'jobs/FruitsGame.html')
