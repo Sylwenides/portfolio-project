@@ -25,4 +25,5 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('MathGame/', jobs.views.MathGame, name='MathGame'),
     path('FruitsGame/', jobs.views.FruitsGame, name='FruitsGame'),
+    path('Stopwatch/', jobs.views.Stopwatch, name='Stopwatch'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

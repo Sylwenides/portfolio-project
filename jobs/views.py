@@ -11,3 +11,6 @@ def MathGame(request):
 
 def FruitsGame(request):
     return render(request, 'jobs/FruitsGame.html')
+
+def Stopwatch(request):
+    return render(request, 'jobs/Stopwatch.html')
