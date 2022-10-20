@@ -14,3 +14,6 @@ def FruitsGame(request):
 
 def Stopwatch(request):
     return render(request, 'jobs/Stopwatch.html')
+
+def DrawingApp(request):
+    return render(request, 'jobs/DrawingApp.html')

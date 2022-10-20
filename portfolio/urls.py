@@ -30,4 +30,5 @@ urlpatterns = [
     path('tasks/', tasks.views.tasks, name='tasks'),
     path('update_task/<str:pk>/', tasks.views.updateTask, name="update_task"),
     path('delete/<str:pk>/', tasks.views.deleteTask, name="delete_task"),
+    path('DrawingApp/', jobs.views.DrawingApp, name="DrawingApp"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
